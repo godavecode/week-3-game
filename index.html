@@ -4,7 +4,9 @@
         <meta charset="utf-8">
     </head>
     <body>
-    	<div id="game"></div>
+    	<h2>Type any letter to start!</h2>
+    	<div id="game">
+    	</div>
     	<script type="text/javascript">
     		function fillBlanks (toFill) { 
 			    for (var i = 0; i < toFill.length; i++) {
@@ -13,35 +15,120 @@
 			        }
 			    }
 			}
-
-    		var words = ["mazda", "ferrari"];
+    		var words = ["mazda", "ferrari", "maserati", "jaguar", "bmw", "mercedes", "porsche", "lexus", "pagani", "audi"];
     		var wordGuess = words[Math.floor(Math.random() * words.length)];
     		var wordGuessArray = wordGuess.split('');
     		var correctLetters = new Array(wordGuessArray.length);
     		fillBlanks(correctLetters)
-    		var tries = 20;
+    		var tries = 10;
+    		var wins = 0;
+    		
+    		
     		var lettersAlreadyGuessed = [];
-
     		document.onkeyup = function(event) {
     			var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+    			//console.log(userGuess);
+    			var letters = lettersAlreadyGuessed.push(userGuess);
+    			
+				//switch
+				var car=wordGuess;
+	            // document.write("Entering switch block<br />");
+	            // document.write(car);
+	            var hint = ' ';
+	            switch (car)
+	            {
+	               case 'mazda': hint = 'japanese sports car';
+	               break;
+	            
+	               case 'ferrari': hint = 'The italian prancing stallion.';
+	               break;
+	            
+	               case 'maserati': hint = 'The italian trident.';
+	               break;
+	            
+	               case 'jaguar': hint = 'The british fast cat.';
+	               break;
+	            
+	               case 'bmw': hint = 'The german turning plane propeller.';
+	               break;
 
-    			if (wordGuessArray.indexOf(userGuess) === -1){
+	               case 'mercedes': hint = 'German perfection or nothing ultimate luxury car company.';
+	               break;
+	            
+	               case 'porsche': hint = 'A german icon with engine in back.';
+	               break;
+	            
+	               case 'lexus': hint = 'Japanese sports luxury leader.';
+	               break;
+	            
+	               case 'pagani': hint = 'Italian sports car maker built on aviation technology.';
+	               break;
+	            
+	               case 'audi': hint = 'Four olympic rings.';
+	               break;
+	            
+	               default:  hint = 'unknown car brand';
+	            }
+
+    			//If letter guessed is not in target word then decrease tries by 1. 
+    			if (tries === 0){
+    				
+    				gameOver();
+    			}
+
+    			else if (correctLetters.indexOf('_') === -1){
+    				youWin();
+
+    			}
+
+    			else if (wordGuessArray.indexOf(userGuess) === -1){
     				tries--;
     			}
-    			else{
-    				console.log(userGuess);
+    			
+    			
+    			//Else if add userGuess to the correctLetters array.
+    			else {
+    				
 	    			for (var i=0; i < wordGuessArray.length; i++){
 	    				if (userGuess === wordGuessArray[i]){
 	    					correctLetters[i] = userGuess;
+	    					
+	    					
+	    					wins++;
     					}
 	    			}
 	    		}
 
-	    		console.log(wordGuess, wordGuessArray, correctLetters, tries);
+	    		function gameOver(){
+			    	alert("Game Over my friend, that " + wordGuess + " really got away this time!");
+					wordGuess = words[Math.floor(Math.random() * words.length)];
+		    		wordGuessArray = wordGuess.split('');
+					correctLetters = new Array(wordGuessArray.length);
+	    	   		fillBlanks(correctLetters);
+	    	   		tries = 10;
+			    	wins = 0;
+			    	hint = " ";
+			    	lettersAlreadyGuessed = [];
 
+	    		}
+
+	    		function youWin(){
+	    			alert("You Win, that " + wordGuess + " is now in your driveway!");
+	    	   		wordGuess = words[Math.floor(Math.random() * words.length)];
+		    		wordGuessArray = wordGuess.split('');
+	    	   		correctLetters = new Array(wordGuessArray.length);
+	    	   		fillBlanks(correctLetters);
+			    	tries = 10;
+			    	wins = 0;
+			    	hint = " "; 
+			    	lettersAlreadyGuessed = [];
+	    		}
+	    		
+
+	    		//console.log(wordGuess, wordGuessArray, correctLetters, tries);
 	    		var html = "<p>Start by choosing your first letter guess. " +
-				"<p>Current Word: " +  
-				wordGuess + 
+				"<p>Word Hint: " +  
+				hint + 
 				"</p>" +
 				"<p>Place Holders: " + 
 				correctLetters + 
@@ -52,7 +139,6 @@
 				"<p>Letters Already Guessed: " + 
 				lettersAlreadyGuessed + 
 				"</p>";
-
 				// Placing the html into the game ID
 				document.querySelector('#game').innerHTML = html;
 	    	}
